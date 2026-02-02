@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Control de Presencia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            padding: 20px;
+        }
+        h1 { text-align: center; }
+        .container { max-width: 600px; margin: auto; }
+        section { background: white; padding: 15px; margin-bottom: 20px; border-radius: 8px; }
+        form { display: flex; flex-direction: column; }
+        input, button { margin: 5px 0; padding: 10px; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #resultados { font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<h1>Control de Presencia</h1>
+
+<div class="container">
+
+    <!-- Alta de trabajadores -->
+    <section>
+        <h2>Alta de Trabajador</h2>
+        <form id="formTrabajador">
+            <input type="text" id="dni" placeholder="DNI" required>
+            <input type="text" id="nombre" placeholder="Nombre" required>
+            <input type="tel" id="telefono" placeholder="Teléfono" required>
+            <input type="email" id="correo" placeholder="Correo" required>
+            <button type="submit">Dar de Alta</button>
+        </form>
+    </section>
+
+    <!-- Control de presencia -->
+    <section>
+        <h2>Control de Presencia</h2>
+        <form id="formPresencia">
+            <input type="text" id="dniPresencia" placeholder="DNI" required>
+            <input type="date" id="fecha" required>
+            <input type="time" id="hora" required>
+            <button type="submit">Registrar Presencia</button>
+        </form>
+    </section>
+
+    <!-- Listado -->
+    <section>
+        <h2>Registros</h2>
+        <div id="resultados"></div>
+    </section>
+
+</div>
+
+<script>
+    // Cargar datos guardados
+    let trabajadores = JSON.parse(localStorage.getItem("trabajadores")) || [];
+    let presencias = JSON.parse(localStorage.getItem("presencias")) || [];
+
+    // Alta de trabajadores
+    document.getElementById("formTrabajador").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const trabajador = {
+            dni: document.getElementById("dni").value.trim(),
+            nombre: document.getElementById("nombre").value.trim(),
+            telefono: document.getElementById("telefono").value.trim(),
+            correo: document.getElementById("correo").value.trim()
+        };
+
+        // Comprobar si DNI ya existe
+        const existe = trabajadores.some(t => t.dni === trabajador.dni);
+        if (existe) {
+            alert("Este DNI ya está registrado");
+            return;
+        }
+
+        trabajadores.push(trabajador);
+        localStorage.setItem("trabajadores", JSON.stringify(trabajadores));
+
+        alert("Trabajador dado de alta correctamente");
+        this.reset();
+    });
+
+    // Control de presencia
+    document.getElementById("formPresencia").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const dniInput = document.getElementById("dniPresencia").value.trim();
+        const fechaInput = document.getElementById("fecha").value;
+        const horaInput = document.getElementById("hora").value;
+
+        // Comprobar que el trabajador existe
+        const trabajador = trabajadores.find(t => t.dni === dniInput);
+        if (!trabajador) {
+            alert("DNI no registrado. Por favor dar de alta primero.");
+            return;
+        }
+
+        const presencia = {
+            dni: dniInput,
+            fecha: fechaInput,
+            hora: horaInput
+        };
+
+        presencias.push(presencia);
+        localStorage.setItem("presencias", JSON.stringify(presencias));
+
+        alert("Presencia registrada");
+        this.reset();
+        mostrarRegistros();
+    });
+
+    // Mostrar registros
+    function mostrarRegistros() {
+        const div = document.getElementById("resultados");
+        div.innerHTML = "";
+
+        if (presencias.length === 0) {
+            div.innerHTML = "<p>No hay registros aún.</p>";
+            return;
+        }
+
+        presencias.forEach(p => {
+            const trabajador = trabajadores.find(t => t.dni === p.dni);
+            const nombre = trabajador ? trabajador.nombre : "Desconocido";
+            div.innerHTML += `
+                <p>DNI: ${p.dni} | Nombre: ${nombre} | Fecha: ${p.fecha} | Hora: ${p.hora}</p>
+            `;
+        });
+    }
+
+    // Mostrar registros al cargar
+    mostrarRegistros();
+</script>
+
+</body>
+</html>
