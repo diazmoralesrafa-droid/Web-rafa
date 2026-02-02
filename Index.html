@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Control de Presencia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Control de Presencia</h1>
+
+  <div class="container">
+    <h2>Alta de Trabajadores</h2>
+    <input type="text" id="dniTrabajador" placeholder="DNI">
+    <input type="text" id="nombreTrabajador" placeholder="Nombre">
+    <input type="text" id="telefonoTrabajador" placeholder="Teléfono">
+    <input type="email" id="correoTrabajador" placeholder="Correo">
+    <button id="btnRegistrarTrabajador">Registrar Trabajador</button>
+
+    <div class="list" id="listaTrabajadores"></div>
+  </div>
+
+  <div class="container">
+    <h2>Control de Presencia</h2>
+    <input type="text" id="dniPresencia" placeholder="DNI">
+    <input type="date" id="fechaPresencia">
+    <input type="time" id="horaPresencia">
+    <button id="btnRegistrarPresencia">Registrar Presencia</button>
+
+    <div class="list" id="listaPresencia"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
